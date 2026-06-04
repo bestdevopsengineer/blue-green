@@ -20,5 +20,6 @@ jobs:
           script: |
             cd /home/ec2-user/blue-green
             git pull origin main
-            docker compose up -d --build
+            chmod +x scripts/deploy-blue-green.sh
+            ./scripts/deploy-blue-green.sh
             curl -f http://localhost:8080/health
