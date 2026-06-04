@@ -24,5 +24,3 @@ docker compose up -d --build
 EC2_HOST =54.209.156.54
 EC2_USER = ec2-user
 EC2_SSH_KEY = your private key content
-
-
