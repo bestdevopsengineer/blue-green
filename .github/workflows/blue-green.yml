@@ -5,6 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      action:
+        description: "deploy or rollback"
+        required: true
+        default: "deploy"
+        type: choice
+        options:
+          - deploy
+          - rollback
 
 jobs:
   deploy:
@@ -20,6 +29,13 @@ jobs:
           script: |
             cd /home/ec2-user/blue-green
             git pull origin main
-            chmod +x scripts/deploy-blue-green.sh
-            ./scripts/deploy-blue-green.sh
+
+            if [ "${{ github.event.inputs.action }}" = "rollback" ]; then
+              chmod +x scripts/rollback.sh
+              ./scripts/rollback.sh
+            else
+              chmod +x scripts/deploy-blue-green.sh
+              ./scripts/deploy-blue-green.sh
+            fi
+
             curl -f http://localhost:8080/health
