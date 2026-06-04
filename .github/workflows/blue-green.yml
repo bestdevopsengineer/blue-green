@@ -1,0 +1,23 @@
+name: Blue Green Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy blue/green app
+        run: |
+          docker compose up -d --build
+
+      - name: Health check
+        run: |
+          curl -f http://localhost:8080/health
