@@ -8,16 +8,17 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy blue/green app
-        run: |
-          docker compose up -d --build
-
-      - name: Health check
-        run: |
-          curl -f http://localhost:8080/health
+      - name: Deploy to EC2 by SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ec2-user/blue-green
+            git pull origin main
+            docker compose up -d --build
+            curl -f http://localhost:8080/health
